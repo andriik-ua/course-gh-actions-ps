@@ -1,0 +1,52 @@
+name: gemini-assistant
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  chat:
+    # Trigger only when comment contains '/chat' on a Pull Request (or remove the PR check if you want it on Issues too)
+    if: contains(github.event.comment.body, '/chat') && github.event.issue.pull_request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Run Gemini Chat
+        uses: google-github-actions/run-gemini-cli@v0.1.22
+        env:
+          GEMINI_CLI_TRUST_WORKSPACE: 'true'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          github_pr_number: ${{ github.event.issue.number }}
+          prompt: |
+            You are assisting with this pull request.
+            Respond directly to the user's question or instruction:
+            ${{ github.event.comment.body }}
+
+#  review:
+#    # Trigger only when comment contains '/review' on a Pull Request
+#    if: contains(github.event.comment.body, '/review') && github.event.issue.pull_request
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v4
+#
+#      - name: Run Gemini PR Review
+#        uses: google-github-actions/run-gemini-cli@v0
+#        env:
+#          GEMINI_CLI_TRUST_WORKSPACE: 'true'
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+#          github_pr_number: ${{ github.event.issue.number }}
+#          prompt: '/pr-code-review'
+#          extensions: |
+#            [ "https://github.com/gemini-cli-extensions/code-review" ]
