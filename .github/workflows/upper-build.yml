@@ -23,10 +23,11 @@ jobs:
 #          cache-dependency-path: ./upper/go.sum
 #      - run: go mod download
 #        working-directory: upper
-#      - run: |
-#          ls
-#          go build
-#          ls
-#          go test
+      - run: |
+          ls
+          go build
+          ls
+          go test
+          ./upper foo bar the
 #        working-directory: upper
 #        name: build and test
