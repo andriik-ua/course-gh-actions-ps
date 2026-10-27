@@ -31,14 +31,16 @@ jobs:
           gemini_debug: true
           settings: |
             {
-              "maxSessionTurns": 20,
-              "coreTools": [
-                "run_shell_command(gh issue view)",
-                "run_shell_command(gh issue comment)",
-                "run_shell_command(gh pr view)",
-                "run_shell_command(gh pr diff)",
-                "run_shell_command(gh pr comment)"
-              ]
+              "model": { "maxSessionTurns": 20 },
+              "tools": {
+                "core": [
+                  "run_shell_command(gh issue view)",
+                  "run_shell_command(gh issue comment)",
+                  "run_shell_command(gh pr view)",
+                  "run_shell_command(gh pr diff)",
+                  "run_shell_command(gh pr comment)"
+                ]
+              }
             }
           prompt: |
             You are a helpful assistant answering a comment on issue/PR #${{ github.event.issue.number }}
